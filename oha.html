@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=yes' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.js'></script>
+    <script src="f15_19.js"></script>
+    <script src="m15_19.js"></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<sidebar>
+<div class="topnav" id="myTopnav">
+<a href="index.html">Home</a>
+<a href="oha.html">15-19 Comparison</a>
+<a href="aha.html">75-84 Comparison</a>
+</div>
+</sidebar>
+
+<style>
+body {
+    overflow: hidden;
+}
+
+body * {
+   -webkit-touch-callout: none;
+     -webkit-user-select: none;
+        -moz-user-select: none;
+         -ms-user-select: none;
+             user-select: none;
+}
+
+.map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 70%;
+}
+#map {
+    position: fixed;
+    width:50%;
+}
+#features {
+    width: 30%;
+    margin-left: 70%;
+    font-family: sans-serif;
+    overflow-y: scroll;
+    background-color: #fafafa;
+}
+section {
+    padding:  25px 50px;
+    line-height: 25px;
+    border-bottom: 1px solid #ddd;
+    opacity: 0.25;
+    font-size: 15px;
+}
+section.active {
+    opacity: 1;
+}
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 200px;
+}
+sidebar {position: fixed;
+         left: 70%;
+         padding: 1%;
+         text-align: left;
+}
+.topnav{
+    position:fixed;
+    top:0;
+    background-color:white;
+}
+.topnav a{
+    float: left;
+    display: block;
+    text-align:center;
+    color:blue;
+    font-size:15px;
+    text-decoration:none;
+    padding:14px 16px;
+}
+.topnav a:hover{
+    background-color:white;
+    color:blue;
+}
+</style>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.1.0/mapbox-gl-compare.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.1.0/mapbox-gl-compare.css' type='text/css' />
+
+<div id='before' class='map'></div>
+<div id='after' class='map'></div>
+<div id='features'>
+    <section id='15-19' class='active'>
+        <h1>15-19 Comparison</h1>
+        <p>Age from 15-19 is a special group as it includes non-adults and young adults. It must be hard of them to take care of their own children both financially and mentally. From 2011-2016. Most areas that has an increasing rate for male locate at Eastern edge of unsw such as Sydney and Canberra or central Coast. Sydney, Hunter’s hill with has the highest increasing rate - 266.67%. For female the areas are more dispersive. The largest also locate in Sydney with increasing rate - 233.33%. The largest number will be 88. It is much higher than male which is only 20. For this age groups, the numbers of female that provide unpaid childcare is much higher than male do in each area. However, from 2011-2016, there are more areas has an decreasing rate for female than male.</p>
+    </section>
+    <section class="active">
+        <p>
+        <br><br><br><br>
+        <br><br><br><br>
+        <br><br><br><img src="oha.png" alt="image missing!" style="wdith:25%" /><br>
+        <img src="fm.png" alt="image missing!" style="wdith:25%" />
+        </p>
+    </section>
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiODcyODE1NTU0IiwiYSI6ImNqNnZuOGQ2dDB4cmkzM3VobjU4aHRlcTEifQ.o_dvmFm9LtwfD2f_yMFIyw';
+var beforeMap = new mapboxgl.Map({
+    container: 'before',
+    style: 'mapbox://styles/mapbox/light-v9',
+    center: [150, -30],
+    zoom: 5
+});
+
+beforeMap.on('load', function() {
+
+    beforeMap.addLayer({
+        'id': 'd2',
+        'type': 'fill-extrusion',
+        'source': {
+            // Geojson Data source used in vector tiles, documented at
+            // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
+            'type': 'geojson',
+            'data': f15_19
+        },
+        'paint': {
+            // See the Mapbox Style Spec for details on property functions
+            // https://www.mapbox.com/mapbox-gl-style-spec/#types-function
+            'fill-extrusion-color': {
+                // Get the fill-extrusion-color from the source 'color' property.
+                'property': '16_F_15-19',
+                "stops":[
+                    [0,'green'],
+                    [25,'red']
+                    ]
+            },
+            'fill-extrusion-height': {
+                // Get fill-extrusion-height from the source 'height' property.
+                'property': 'F_15-19_In',
+                "stops":[
+                    [0,0],
+                    [3,65535]
+                    ]
+            },
+            'fill-extrusion-opacity': 0.9
+        }
+    });
+});
+
+var afterMap = new mapboxgl.Map({
+    container: 'after',
+    style: 'mapbox://styles/mapbox/dark-v9',
+    center: [150, -30],
+    zoom: 5
+});
+
+afterMap.on('load', function() {
+
+    afterMap.addLayer({
+        'id': 'd2',
+        'type': 'fill-extrusion',
+        'source': {
+            // Geojson Data source used in vector tiles, documented at
+            // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
+            'type': 'geojson',
+            'data': m15_19
+        },
+        'paint': {
+            // See the Mapbox Style Spec for details on property functions
+            // https://www.mapbox.com/mapbox-gl-style-spec/#types-function
+            'fill-extrusion-color': {
+                // Get the fill-extrusion-color from the source 'color' property.
+                'property': '16_M_15-19',
+                "stops":[
+                    [0,'green'],
+                    [25,'red']
+                    ]
+            },
+            'fill-extrusion-height': {
+                // Get fill-extrusion-height from the source 'height' property.
+                'property': 'M_15-19_In',
+                "stops":[
+                    [0,0],
+                    [3,65535]
+                    ]
+            },
+            'fill-extrusion-opacity': 0.9
+        }
+    });
+});
+
+var map = new mapboxgl.Compare(beforeMap, afterMap, {
+    // Set this to enable comparing two maps by mouse movement:
+    // mousemove: true
+});
+</script>
+
+</body>
+</html>
